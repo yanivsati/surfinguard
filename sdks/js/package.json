@@ -1,0 +1,60 @@
+{
+  "name": "@surfinguard/sdk",
+  "version": "1.0.0",
+  "description": "Surfinguard AI Security SDK for JavaScript/TypeScript — dual-mode Guard class with local and API modes",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./express": {
+      "types": "./dist/integrations/express.d.ts",
+      "import": "./dist/integrations/express.js"
+    },
+    "./nextjs": {
+      "types": "./dist/integrations/nextjs.d.ts",
+      "import": "./dist/integrations/nextjs.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@surfinguard/core-engine-wasm": "workspace:^",
+    "@surfinguard/types": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "vitest": "^3.0.5"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yanivsati/surfinguard-platform",
+    "directory": "sdks/js"
+  },
+  "homepage": "https://surfinguard.com",
+  "author": "Surfinguard <dev@surfinguard.com>",
+  "keywords": [
+    "surfinguard",
+    "ai-security",
+    "agent-safety",
+    "phishing",
+    "prompt-injection",
+    "llm-guard",
+    "ai-agent"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
