@@ -1,9 +1,7 @@
 # Surfinguard
 
-[![CI](https://github.com/yanivsati/surfinguard/actions/workflows/ci.yml/badge.svg)](https://github.com/yanivsati/surfinguard/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@surfinguard/sdk)](https://www.npmjs.com/package/@surfinguard/sdk)
 [![PyPI](https://img.shields.io/pypi/v/surfinguard)](https://pypi.org/project/surfinguard/)
-[![Tests](https://img.shields.io/badge/tests-2549-brightgreen)](#testing)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 **The independent trust layer for AI agents.** Analyze any agent action against 5 risk primitives before it executes.
@@ -24,41 +22,53 @@ Surfinguard scores AI agent actions (URLs, commands, text prompts, file operatio
 
 ## Quick Start
 
+### JS/TS SDK
+
 ```bash
-npm install @surfinguard/core-engine @surfinguard/types
+npm install @surfinguard/sdk
 ```
 
 ```typescript
-import { CoreEngine } from '@surfinguard/core-engine';
+import { Guard } from '@surfinguard/sdk';
 
-const engine = new CoreEngine();
+// API mode — uses Surfinguard cloud API
+const guard = new Guard({ apiKey: 'sg_live_...' });
 
-// Check a URL
-const result = engine.check({ type: 'url', value: 'https://g00gle-login.tk/verify' });
+const result = await guard.checkUrl('https://g00gle-login.tk/verify');
 // → { score: 9, level: 'DANGER', reasons: ['Brand impersonation', 'Risky TLD'], ... }
 
-// Check a command
-const cmd = engine.check({ type: 'command', value: 'rm -rf / --no-preserve-root' });
+const cmd = await guard.checkCommand('rm -rf / --no-preserve-root');
 // → { score: 10, level: 'DANGER', primitive: 'DESTRUCTION', ... }
 
-// Check for prompt injection
-const text = engine.check({ type: 'text', value: 'Ignore all previous instructions...' });
+const text = await guard.checkText('Ignore all previous instructions...');
 // → { score: 9, level: 'DANGER', primitive: 'MANIPULATION', ... }
+```
+
+### Python SDK
+
+```bash
+pip install surfinguard
+```
+
+```python
+from surfinguard import Guard
+
+guard = Guard(api_key="sg_live_...")
+
+result = guard.check_url("https://g00gle-login.tk/verify")
+# → CheckResult(score=9, level='DANGER', reasons=['Brand impersonation', ...])
 ```
 
 ## Packages
 
-| Package | Description | npm |
-|---------|-------------|-----|
-| [`@surfinguard/sdk`](sdks/js/) | JS/TS SDK with dual local/API mode | [![npm](https://img.shields.io/npm/v/@surfinguard/sdk)](https://www.npmjs.com/package/@surfinguard/sdk) |
-| [`@surfinguard/core-engine`](packages/core-engine/) | Heuristic scoring engine — 18 analyzers, 152 threats | [![npm](https://img.shields.io/npm/v/@surfinguard/core-engine)](https://www.npmjs.com/package/@surfinguard/core-engine) |
-| [`@surfinguard/core-engine-wasm`](packages/core-engine-wasm/) | WASM-powered engine for near-native performance | [![npm](https://img.shields.io/npm/v/@surfinguard/core-engine-wasm)](https://www.npmjs.com/package/@surfinguard/core-engine-wasm) |
-| [`@surfinguard/types`](packages/shared-types/) | Shared TypeScript type definitions | [![npm](https://img.shields.io/npm/v/@surfinguard/types)](https://www.npmjs.com/package/@surfinguard/types) |
-| [`@surfinguard/compliance`](packages/compliance/) | EU AI Act compliance assessment | [![npm](https://img.shields.io/npm/v/@surfinguard/compliance)](https://www.npmjs.com/package/@surfinguard/compliance) |
-| [`@surfinguard/cli`](apps/cli/) | CLI — check actions from the terminal | [![npm](https://img.shields.io/npm/v/@surfinguard/cli)](https://www.npmjs.com/package/@surfinguard/cli) |
-| [`@surfinguard/mcp-server`](apps/mcp-server/) | MCP server for Claude/Cursor integration | [![npm](https://img.shields.io/npm/v/@surfinguard/mcp-server)](https://www.npmjs.com/package/@surfinguard/mcp-server) |
-| [`surfinguard`](sdks/python/) | Python SDK (PyPI) | [![PyPI](https://img.shields.io/pypi/v/surfinguard)](https://pypi.org/project/surfinguard/) |
-| [`threat-corpus`](threat-corpus/) | Test data: malicious + benign samples across all action types | — |
+| Package | Description | Install |
+|---------|-------------|---------|
+| [`@surfinguard/sdk`](sdks/js/) | JS/TS SDK — dual local/API mode, Express & Next.js integrations | `npm i @surfinguard/sdk` |
+| [`@surfinguard/types`](packages/shared-types/) | Shared TypeScript type definitions | `npm i @surfinguard/types` |
+| [`surfinguard`](https://pypi.org/project/surfinguard/) | Python SDK — Guard class, LangChain/CrewAI/AutoGen integrations | `pip install surfinguard` |
+| `@surfinguard/core-engine` | Heuristic scoring engine — 18 analyzers, 152 threats | `npm i @surfinguard/core-engine` |
+| `@surfinguard/cli` | CLI — check actions from the terminal | `npx @surfinguard/cli check <url>` |
+| `@surfinguard/mcp-server` | MCP server for Claude/Cursor integration | `npx @surfinguard/mcp-server` |
 
 ## 18 Analyzers
 
@@ -105,36 +115,6 @@ Input Action
 │   Verdict   │  SAFE (0-2) | CAUTION (3-6) | DANGER (7+)
 └─────────────┘
 ```
-
-## Development
-
-```bash
-# Install
-pnpm install
-
-# Build all packages
-pnpm turbo build
-
-# Run all tests
-pnpm turbo test
-
-# Lint
-pnpm turbo lint
-
-# Format
-pnpm format
-```
-
-## Rust Engine
-
-A Rust port of the core engine is available at [`engine/`](engine/) for native performance:
-
-```bash
-cd engine && cargo build --release
-cd engine && cargo test
-```
-
-Produces: native library, WASM module, Python bindings (via maturin), and C FFI.
 
 ## Contributing
 
